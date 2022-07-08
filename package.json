@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "big-number": "^2.0.0",
     "mocha": "^10.0.0"
   },
   "devDependencies": {

@@ -1,6 +1,8 @@
 const Demo=artifacts.require('Demo');
+var BigNumber = require('big-number');
 
 contract('Demo',(accounts) => {
+
     it('Should deploy smart contract properply',async () => {
          const demo=await Demo.deployed();
          assert(demo.address !== '');
@@ -28,13 +30,14 @@ contract('Demo',(accounts) => {
 
      });
 
-   //   it('should transfer ether', async() => {
-   //      const demo=await Demo.deployed();
-   //      const addr=accounts[1];
-   //      const manager_add= await demo.owner();
-   //      const value=await demo.send(addr);
-   //      assert.isAtLeast(value,"1 ether");
-   //      assert(addr.transfer(value));
-   //   });
+     it('should transfer ether', async() => {
+        
+        const demo=await Demo.deployed();
+        const addr=accounts[1];
+        const manager_add= await demo.owner();
+        const value=await demo.send(addr);
+        assert.isAtLeast(BigNumber(value),1);
+        assert(addr.transfer(value));
+     });
     
 });
