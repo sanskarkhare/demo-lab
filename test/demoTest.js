@@ -35,24 +35,26 @@ contract('Demo',(accounts) => {
       const demo=await Demo.deployed();
    
         const receiver_beforeBalance= await web3.eth.getBalance(accounts[1]);
-        await demo.send(accounts[1],10,{from:accounts[0]});
+        await demo.send(accounts[1], web3.utils.toWei('1', 'ether'),{ value: web3.utils.toWei('1', 'ether')});
         
         const receiver_afterBalance= await web3.eth.getBalance(accounts[1]);
         const finalBalance=web3.utils.toBN(receiver_afterBalance);
         const initialBalance= web3.utils.toBN(receiver_beforeBalance);
-        
-        assert(finalBalance.sub(initialBalance).toNumber()===10);
+
+      const temp = finalBalance.sub(initialBalance)
+      // console.log(Number(temp))
+        assert(Number(temp)===1000000000000000000, "not trnasferred");
 
         
       });
 
      it("amount send should be atleast 1 ether",async () => {
       try{
+         const demo=await Demo.deployed();
+         const value=await demo.send(accounts[1], web3.utils.toWei('1', 'ether'),{ value: web3.utils.toWei('1', 'ether')});
+         console.log(value);
          
-         const value=await demo.send(accounts[1],{value: web3.utils.toWei('1', 'ether')});
-         console.log("yes");
-         
-         assert.isAtLeast(value.toNumber,1000000000000000000);
+         assert.isAtLeast(Number(value),1);
         }
         catch(e){
          assert(false,"amount not send");
