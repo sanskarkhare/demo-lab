@@ -3,7 +3,7 @@ var BigNumber = require('big-number');
 
 contract('Demo',(accounts) => {
 
-    it('Should deploy smart contract properply',async () => {
+    it('Should deploy smart contract properly',async () => {
          const demo=await Demo.deployed();
          assert(demo.address !== '');
          const manager_add= await demo.owner();
@@ -24,7 +24,8 @@ contract('Demo',(accounts) => {
         const demo=await Demo.deployed();
          const manager_add= await demo.owner();
 
-    const ownerBal=await demo.balanceOf();
+      const ownerBal=await demo.balanceOf();
+    
         assert.isNotNull(ownerBal,"wrong balance");
         
 
@@ -35,9 +36,11 @@ contract('Demo',(accounts) => {
         const demo=await Demo.deployed();
         const addr=accounts[1];
         const manager_add= await demo.owner();
-        const value=await demo.send(addr);
-        assert.isAtLeast(BigNumber(value),1);
-        assert(addr.transfer(value));
+        const value=await demo.send(addr,{value: web3.utils.toWei('1', 'ether')});
+        
+        const val = (web3.utils.fromWei(value.receipt.logs[0].args.amount, 'ether'))
+        assert.isAtLeast(Number(val),1, 'transferred ether is less than 1');
+      //   assert(addr.transfer(val));
      });
     
 });
