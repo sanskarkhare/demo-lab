@@ -31,16 +31,57 @@ contract('Demo',(accounts) => {
 
      });
 
-     it('should transfer ether', async() => {
+     it('should transfer ether to another address', async() => {
+      const demo=await Demo.deployed();
+   
+        const receiver_beforeBalance= await web3.eth.getBalance(accounts[1]);
+        await demo.send(accounts[1],10,{from:accounts[0]});
         
-        const demo=await Demo.deployed();
-        const addr=accounts[1];
-        const manager_add= await demo.owner();
-        const value=await demo.send(addr,{value: web3.utils.toWei('1', 'ether')});
+        const receiver_afterBalance= await web3.eth.getBalance(accounts[1]);
+        const finalBalance=web3.utils.toBN(receiver_afterBalance);
+        const initialBalance= web3.utils.toBN(receiver_beforeBalance);
         
-        const val = (web3.utils.fromWei(value.receipt.logs[0].args.amount, 'ether'))
-        assert.isAtLeast(Number(val),1, 'transferred ether is less than 1');
-      //   assert(addr.transfer(val));
+        assert(finalBalance.sub(initialBalance).toNumber()===10);
+
+        
+      });
+
+     it("amount send should be atleast 1 ether",async () => {
+      try{
+         
+         const value=await demo.send(accounts[1],{value: web3.utils.toWei('1', 'ether')});
+         console.log("yes");
+         
+         assert.isAtLeast(value.toNumber,1000000000000000000);
+        }
+        catch(e){
+         assert(false,"amount not send");
+        }
+     });
+
+     it('checks if only owner can send', async () => {
+      try {
+          await demo.send(accounts[1],10,{from:accounts[0]});
+          
+      } catch (error) {
+          assert(error,"Only owner should send the tx");
+      }
+   });
+
+     it("should return balance of owner",async() => {
+      const demo=await Demo.deployed();
+      //const balance= await demo.balanceOf();
+      await web3.eth.getBalance(accounts[0]);
+      assert(true);
+     });
+      //   const demo=await Demo.deployed();
+      //   const addr=accounts[1];
+      //   const manager_add= await demo.owner();
+      //   const value=await demo.send(addr,{value: web3.utils.toWei('1', 'ether')});
+        
+      //   const val = (web3.utils.fromWei(value.receipt.logs[0].args.amount, 'ether'))
+      //   assert.isAtLeast(Number(val),1, 'transferred ether is less than 1');
+      // //   assert(addr.transfer(val));
      });
     
-});
+
