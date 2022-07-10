@@ -1,5 +1,5 @@
 const Demo=artifacts.require('Demo');
-var BigNumber = require('big-number');
+
 
 contract('Demo',(accounts) => {
 
@@ -51,10 +51,11 @@ contract('Demo',(accounts) => {
      it("amount send should be atleast 1 ether",async () => {
       try{
          const demo=await Demo.deployed();
+        // const value=await demo.send(addr,{value: web3.utils.toWei('1', 'ether')});
          const value=await demo.send(accounts[1], web3.utils.toWei('1', 'ether'),{ value: web3.utils.toWei('1', 'ether')});
-         console.log(value);
-         
-         assert.isAtLeast(Number(value),1);
+         const val = (web3.utils.fromWei(value.receipt.logs[0].args.amount, 'ether'));
+         console.log(val);
+         assert.isAtLeast(Number(val),1,"less than 1 ether");
         }
         catch(e){
          assert(false,"amount not send");

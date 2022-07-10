@@ -4,7 +4,7 @@ pragma solidity >=0.4.22 <0.9.0;
 contract Demo {
   address payable public owner;
 
-  // event transferred(uint256 amount);
+  event transferred(uint256 amount);
   constructor(){
     owner=payable(msg.sender);
   }
@@ -23,8 +23,7 @@ contract Demo {
         require(amount >= 1 ether);
         require(msg.sender==owner);
         _addr.transfer(amount);
-        // uint256 temp = msg.value;
-        // emit transferred(temp);
-        // return temp;
+         emit transferred(amount);
+        
     }
 }
